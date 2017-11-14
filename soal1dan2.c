@@ -11,6 +11,7 @@
 
 static const char *dirpath = "/home/jharisonn/Documents";
 char str[3][5] = {".pdf",".doc",".txt"};
+struct stat st = {0};
 static int xmp_getattr(const char *path, struct stat *stbuf)
 {
   int res;
@@ -70,7 +71,9 @@ static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
       newName = strcat(de->d_name,".ditandai");
       chmod(de->d_name, 0000);
     }
-    
+    if(stat("/rahasia",&st) == -1){
+      mkdir("/rahasia",0700);
+    }
     
     //newName = strcat(de->d_name, ".bak");
     struct stat st;
