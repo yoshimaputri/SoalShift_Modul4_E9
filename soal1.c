@@ -49,8 +49,8 @@ static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
     return -errno;
 
   while ((de = readdir(dp)) != NULL) {
-    char *newName;
-    newName = de->d_name;
+    // char *newName;
+    // newName = de->d_name;
     // for(int i=0;i<3;i++){
     //   if(strcmp(newName+strlen(newName) - 4 , str[i]) == 0){
     //     printf("Terjadi kesalahan! File berisi konten berbahaya");
@@ -75,25 +75,24 @@ static int xmp_read(const char *path, char *buf, size_t size, off_t offset,
      struct fuse_file_info *fi)
 {
   char fpath[1000];
-  char newFile[100];
   if(strcmp(path,"/") == 0)
   {
-    memcpy(newFile, path, strlen(path));
-//    path=dirpath;
-    sprintf(fpath,"%s",newFile);
+    //memcpy(newFile, path, strlen(path));
+    path=dirpath;
+    sprintf(fpath,"%s",path);
   }
   else {
-    memcpy(newFile, path, strlen(path) - 4);
-    newFile[strlen(path) - 4] = '\0';
+    // memcpy(newFile, path, strlen(path) - 4);
+    // newFile[strlen(path) - 4] = '\0';
 
-    sprintf(fpath, "%s%s",dirpath,newFile);
+    sprintf(fpath, "%s%s",dirpath,path);
   }
   int res = 0;
   int fd = 0 ;
   int flag=0;
   for(int i=0;i<3;i++){
     if(strcmp(fpath+strlen(fpath)-4,str[i])==0){
-      flag=1;
+      // flag=1;
       char ch,source[1000],hasil[1000],command[1000];
       sprintf(source,"%s",fpath);
       sprintf(hasil,"%s.ditandai",fpath);
@@ -104,7 +103,7 @@ static int xmp_read(const char *path, char *buf, size_t size, off_t offset,
       break;
     }
   }
-  if(flag==0){
+
      (void) fi;
      fd = open(fpath, O_RDONLY);
      if (fd == -1)
@@ -116,7 +115,7 @@ static int xmp_read(const char *path, char *buf, size_t size, off_t offset,
 
      close(fd);
      return res;
-  }
+  
 }
 
 static struct fuse_operations xmp_oper = {
