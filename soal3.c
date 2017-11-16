@@ -97,6 +97,31 @@ static int xmp_read(const char *path, char *buf, size_t size, off_t offset,
     return res;
 }
 
+static int xmp_chmod(const char *path, mode_t mode)
+{ //Change the mode (permissions) of the given object to the given new permissions. Only the permissions bits of mode should be examined.
+    int res;
+    char fpath[1000];
+    char dirbaru[] = "/home/yoshi/SoalShift_Modul4_E9/Downloads/simpanan";
+    sprintf(fpath,"%s%s", dirbaru, path);
+    res = chmod(fpath, mode);
+    if(res == -1)
+        return -errno;
+
+    return 0;
+}
+
+static int xmp_chown(const char *path, uid_t uid, gid_t gid)
+{ //to pretend that all files are owned by the user who mounted the filesystem
+    int res;
+    char fpath[1000];
+    sprintf(fpath,"%s%s", dirpath, path);
+    res = lchown(fpath, uid, gid);
+    if(res == -1)
+        return -errno;
+
+    return 0;
+}
+
 static int xmp_rename(const char *from, const char *to)
 {	//save edited file to other dir
     int res;
@@ -157,6 +182,8 @@ static struct fuse_operations xmp_oper = {
   .mkdir    = xmp_mkdir,
   .readdir  = xmp_readdir,
   .read   = xmp_read,
+  .chmod  = xmp_chmod,
+  .chown  = xmp_chown,
   .rename = xmp_rename,
   .write  = xmp_write,
   .truncate  = xmp_truncate,
