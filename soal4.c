@@ -67,6 +67,32 @@ static int xmp_mkdir(const char *path, mode_t mode)
 	return 0;
 }
 
+static int xmp_chmod(const char *path, mode_t mode)
+{
+    int res;
+    char fpath[1000];
+    char direktori[] = "/home/yoshi/SoalShift_Modul4_E9/Downloads/simpanan";
+    //sprintf(fpath,"%s%s", dirpath, path);
+    sprintf(fpath,"%s%s", direktori, path);
+    res = chmod(fpath, mode);
+    if(res == -1)
+        return -errno;
+
+    return 0;
+}
+
+static int xmp_chown(const char *path, uid_t uid, gid_t gid)
+{ //to pretend that all files are owned by the user who mounted the filesystem
+    int res;
+    char fpath[1000];
+    sprintf(fpath,"%s%s", dirpath, path);
+    res = lchown(fpath, uid, gid);
+    if(res == -1)
+        return -errno;
+
+    return 0;
+}
+
 static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
  	      off_t offset, struct fuse_file_info *fi)
 {
@@ -140,6 +166,8 @@ static int xmp_read(const char *path, char *buf, size_t size, off_t offset,
 static struct fuse_operations xmp_oper = {
   .getattr  = xmp_getattr,
   .rename   = xmp_rename,
+  .chmod    = xmp_chmod,
+  .chown    = xmp_chown,
   .mkdir    = xmp_mkdir,
   .readdir  = xmp_readdir,
   .read   = xmp_read,
