@@ -97,18 +97,36 @@ static int xmp_read(const char *path, char *buf, size_t size, off_t offset,
     return res;
 }
 
+static int xmp_rename(const char *from, const char *to)
+{	//save edited file to other dir
+    int res;
+    char ffrom[1000];
+    char fto[1000];
+    system("mkdir /home/yoshi/SoalShift_Modul4_E9/Downloads/simpanan");
+    char direktori[] = "/home/yoshi/SoalShift_Modul4_E9/Downloads/simpanan";
+    sprintf(ffrom,"%s%s",dirpath,from);
+    sprintf(fto,"%s%s",direktori,to);
+    res = rename(ffrom, fto);
+
+    if(res == -1)
+    return -errno;
+
+    return 0;
+}
+
 static int xmp_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
     int fd;
     int res;
-    char fpath[1000], temp[1000];
-    const char *newnamedir = "/simpanan/";
+    char fpath[1000];//temp[1000];
+/*    const char *newnamedir = "/simpanan/";
     sprintf(temp, "mkdir %s%s", dirpath, newnamedir);
     system(temp);
    char ffile[1000];
     sprintf(ffile, "cp %s%s %s%s%s", dirpath,path, dirpath,newnamedir, path);
     system(ffile);
-    sprintf(fpath, "%s%s%s", dirpath,newnamedir, path);
+    sprintf(fpath, "%s%s%s", dirpath,newnamedir, path);*/
+    sprintf(fpath, "%s%s", dirpath, path);
     fd = open(fpath, O_WRONLY);
     if(fd == -1)
     {
@@ -139,6 +157,7 @@ static struct fuse_operations xmp_oper = {
   .mkdir    = xmp_mkdir,
   .readdir  = xmp_readdir,
   .read   = xmp_read,
+  .rename = xmp_rename,
   .write  = xmp_write,
   .truncate  = xmp_truncate,
 };

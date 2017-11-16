@@ -18,22 +18,41 @@ static int xmp_getattr(const char *path, struct stat *stbuf)
 {
   int res;
   char fpath[1000];
-  char newFile[100];
-  printf("path   : %s, len: %d\n", path, strlen(path));
-  if (strcmp(path, "/") != 0) {
-    memcpy(newFile, path, strlen(path) - 4);
-    newFile[strlen(path) - 4] = '\0';
-  } else {
-    memcpy(newFile, path, strlen(path));
-  }
-  printf("newFile: %s\n", newFile);
-  sprintf(fpath,"%s%s",dirpath, newFile);
+  char newfile[100];
+printf("path : %s, len : %d\n", path, strlen(path));
+if(strcmp(path, "/") != 0){
+memcpy(newfile, path, strlen(path) - 5);
+newfile[strlen(path) - 5] = '\0';
+} else {
+  memcpy(newfile, path, strlen(path));
+}
+  printf("newfile: %s\n", newfile);
+  sprintf(fpath,"%s%s",dirpath, path);
   res = lstat(fpath, stbuf);
 
   if (res == -1)
     return -errno;
 
   return 0;
+}
+
+static int xmp_rename(const char *from, const char *to)
+{
+    int res;
+    char ffrom[1000];
+    char fto[1000];
+    system("mkdir /home/yoshi/SoalShift_Modul4_E9/simpanan");
+
+    char direktori[] = "/home/yoshi/SoalShift_Modul4_E9/simpanan";
+
+    sprintf(ffrom,"%s%s",dirpath,from);
+    sprintf(fto,"%s%s",direktori,to);
+    res = rename(ffrom, fto);
+
+    if(res == -1)
+    return -errno;
+
+    return 0;
 }
 
 static int xmp_mkdir(const char *path, mode_t mode)
@@ -97,8 +116,8 @@ static int xmp_read(const char *path, char *buf, size_t size, off_t offset,
     sprintf(fpath,"%s",newFile);
   }
   else {
-    memcpy(newFile, path, strlen(path) - 4);
-    newFile[strlen(path) - 4] = '\0';
+    memcpy(newFile, path, strlen(path) - 5);
+    newFile[strlen(path) - 5] = '\0';
 
     sprintf(fpath, "%s%s",dirpath,newFile);
   }
@@ -120,6 +139,7 @@ static int xmp_read(const char *path, char *buf, size_t size, off_t offset,
 
 static struct fuse_operations xmp_oper = {
   .getattr  = xmp_getattr,
+  .rename   = xmp_rename,
   .mkdir    = xmp_mkdir,
   .readdir  = xmp_readdir,
   .read   = xmp_read,
