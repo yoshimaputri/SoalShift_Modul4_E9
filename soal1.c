@@ -60,20 +60,6 @@ static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
     char *newName;
     int flag = 0;
     newName = de->d_name;
-    for(int i=0;i<3;i++){
-      if(strcmp(newName+strlen(newName) - 4 , str[i]) == 0){
-        printf("Terjadi kesalahan! File berisi konten berbahaya");
-        flag = 1;
-        break;
-      }
-    }
-    if(flag==1){
-      newName = strcat(de->d_name,".ditandai");
-      chmod(de->d_name, 0000);
-    }
-    if(stat("/rahasia",&st) == -1){
-      mkdir("/rahasia",0700);
-    }
     
     //newName = strcat(de->d_name, ".bak");
     struct stat st;
